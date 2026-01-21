@@ -1,50 +1,128 @@
-# Electronic Voting Machine (EVM) – Verilog
+# Electronic Voting Machine (EVM) on FPGA – Basys 3
 
-## Overview
-This project implements a **4-candidate Electronic Voting Machine (EVM)** using Verilog HDL. The design simulates a real-world voting system where users can cast votes, and results can be displayed in a controlled manner. The system is modular, covering vote validation, counting, and result display.
+## 📌Overview
+This project implements a fully functional **Electronic Voting Machine (EVM)** on an FPGA using **Verilog HDL**, targeted for the **Basys 3 (Artix-7)** development board.  
+The system supports **four candidates** and operates in **two modes**:
+- Voting Mode
+- Counting Mode
 
-The project was developed as part of an RTL design and verification learning initiative and is simulated using EDA Playground.
-
----
-
-## Module Structure
-
-### `evm.v` – RTL Design (All Modules)
-- **`buttonControl`**  
-  Debounces the user button input and generates a valid vote signal only after a sustained press duration (for noise immunity).
-
-- **`voteLogger`**  
-  Maintains vote counters for each of the four candidates and updates counts upon receiving a valid vote in **voting mode**.
-
-- **`modeControl`**  
-  Controls the output display using LEDs based on the selected candidate and system mode. In **result mode**, it shows vote count for a selected candidate.
-
-- **`votingMachine`**  
-  The top-level module that instantiates and connects all submodules. It manages inputs from user buttons and system mode selection.
-
----
-
-### `evm_tb.v` – Testbench
-- Provides simulation inputs for vote casting and mode changes.
-- Verifies vote registration and LED output behavior.
-- Designed for waveform observation and result validation.
+The design is modular, synchronous, and fully synthesizable, and has been successfully implemented on hardware.
 
 ---
 
 ## Features
-- **Supports 4 candidates** with dedicated input buttons.
-- **Vote validation logic** using press duration counter.
-- **Two modes of operation**: voting and result display.
-- Modular, reusable Verilog code for clarity and scalability.
-- Simulated using [EDA Playground](https://edaplayground.com) or tools like ModelSim/GTKWave.
+- Supports **4 candidates**
+- **Two operating modes**: Voting and Counting
+- Debounced and validated push-button inputs
+- Secure vote logging mechanism
+- Multiplexed **4-digit 7-segment display**
+- Binary to BCD conversion for display
+- Implemented and tested on **Basys 3 FPGA board**
 
 ---
 
-## ▶️ How to Run (EDA Playground)
-1. Upload `evm.v` and `evm_tb.v` into your Verilog simulation environment.
-2. Set `votingMachine` as the top module in your simulator.
-3. Run the simulation and observe waveforms or `led` output behavior.
-4. Optional: Use `$dumpfile`, `$dumpvars`, and GTKWave for visual debugging.
+## System Architecture
+
+Top Module  
+├── Clock Divider  
+├── Button Control  
+├── Mode Control  
+├── Voter Logger  
+└── Display Controller  
+&nbsp;&nbsp;&nbsp;&nbsp;├── Binary to BCD Converter  
+&nbsp;&nbsp;&nbsp;&nbsp;└── Seven Segment Display Driver  
 
 ---
+
+## Module Description
+
+### 1. Clock Divider
+- Divides the 100 MHz onboard clock to a lower frequency
+- Provides stable timing for button control and display multiplexing
+
+---
+
+### 2. Button Control
+- Handles push-button inputs
+- Performs debouncing and validation
+- Generates a single-cycle valid vote signal
+- Prevents multiple counts from a single press
+
+---
+
+### 3. Mode Control
+- Controls system operation between Voting Mode and Counting Mode
+- Uses internal counters and flags for mode switching
+- Drives LEDs to indicate current system state
+- Routes valid votes to the appropriate candidate
+
+---
+
+### 4. Voter Logger
+- Maintains vote count for each candidate
+- Increments vote count only when:
+  - System is in voting mode
+  - Corresponding candidate button is pressed
+  - Vote is validated
+- Ensures reliable and accurate vote counting
+
+---
+
+### 5. Display Controller
+Responsible for displaying vote counts on the Basys 3 7-segment display.
+
+#### a) Binary to BCD Converter
+- Converts binary vote count into:
+  - Thousands
+  - Hundreds
+  - Tens
+  - Ones
+- Uses the shift-and-add-3 (Double Dabble) algorithm
+
+#### b) Seven Segment Display Driver
+- Drives the 4-digit multiplexed 7-segment display
+- Rapid digit switching for continuous visual output
+- Compatible with active-low anode and segment signals of Basys 3
+
+---
+
+## Operating Modes
+
+### Voting Mode
+- Enabled through mode control logic
+- Voters cast votes using push buttons
+- Validated votes are logged securely
+- LEDs indicate voting activity
+
+### Counting Mode
+- Displays total votes of selected candidate
+- Vote count shown on 7-segment display
+- Candidate selection via push buttons
+
+---
+
+##  Hardware and Tools Used
+- FPGA Board: **Basys 3 (Artix-7)**
+- Inputs: Push buttons, switches
+- Outputs: LEDs, 4-digit 7-segment display
+- HDL: Verilog
+- Toolchain: Xilinx Vivado
+
+---
+##  Future Enhancements
+- Increase the number of supported candidates
+- Add voter authentication using ID or password mechanism
+- Store vote data in non-volatile memory (EEPROM / Flash)
+- Integrate UART or LCD for external result display
+- Add real-time clock (RTC) for timestamped voting
+- Implement vote encryption for enhanced security
+- Improve scalability and modularity for larger elections
+
+## Author
+**Sarath Srinivasan**  
+B.Tech Electrical Engineering  
+FPGA | Digital Design | Verilog | VLSI Enthusiast
+
+
+
 
