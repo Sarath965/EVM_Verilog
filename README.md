@@ -1,6 +1,6 @@
 # Electronic Voting Machine (EVM) on FPGA – Basys 3
 
-## 📌Overview
+## Overview
 This project implements a fully functional **Electronic Voting Machine (EVM)** on an FPGA using **Verilog HDL**, targeted for the **Basys 3 (Artix-7)** development board.  
 The system supports **four candidates** and operates in **two modes**:
 - Voting Mode
